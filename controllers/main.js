@@ -8,6 +8,7 @@ const login = async (req, res) => {
     throw new CustomAPIError('please enter a username and password', 400);
   }
   const id = new Date().getDate();
+
   // return token
   // pass in secret in the second param
   const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
@@ -17,6 +18,15 @@ const login = async (req, res) => {
   res.status(200).json({ msg: 'user created account', token });
 };
 const dashboard = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  // check if there is token
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    throw new CustomAPIError('No token provided', 401);
+  }
+  // spliting returns array
+  const token = authHeader.split(' ')[1];
+
+  console.log(token);
   const luckyNumber = Math.floor(Math.random() * 100);
   res
     .status(200)
