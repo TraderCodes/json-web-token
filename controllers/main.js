@@ -18,24 +18,11 @@ const login = async (req, res) => {
   res.status(200).json({ msg: 'user created account', token });
 };
 const dashboard = async (req, res) => {
-  const authHeader = req.headers.authorization;
-  // check if there is token
-  if (!authHeader || !authHeader.startsWith('Bearer')) {
-    throw new CustomAPIError('No token provided', 401);
-  }
-  // spliting returns array
-  const token = authHeader.split(' ')[1];
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const luckyNumber = Math.floor(Math.random() * 100);
-    res
-      .status(200)
-      .json({ msg:`Hello ${decoded.username}`, secret: `here is your key ${luckyNumber}` });
-    console.log(decoded)
-
-  } catch (error) {
-        throw new CustomAPIError('nOT AUTHORIZED TO ACCESS THIS ROUTE', 401);
-  }
+  const luckyNumber = Math.floor(Math.random() * 100);
+  res.status(200).json({
+    msg: `Hello ${req.user.username}`,
+    secret: `here is your key ${luckyNumber}`,
+  });
 
   console.log(token);
 };
